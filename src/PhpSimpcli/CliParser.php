@@ -26,7 +26,7 @@ class CliParser
      * Get info about the specified element/option
      * Returns an standard class with three properties:
      *      found: boolean  The option is present in the command line or not
-     *      type: multi / single  The value is an string or an array of values
+     *      type: multi / single / missing  The value is an string, an array of values or is missing
      *      value: The value of the option or null
      * @param $element The option specified in the command line to get the value from
      * @return stdClass
@@ -34,12 +34,20 @@ class CliParser
     public function get($element){
         $ret = new stdClass();
         if(isset($this->args[$element])){
+            $value = $this->args[$element];
+            if($value == ''){
+                $value = null;
+            }
             $ret->found = true;
-            $ret->value = $this->args[$element];
-            if(is_array($this->args[$element])){
+            $ret->value = $value;
+            if(is_array($value)){
                 $ret->type = 'multi';
             }else{
-                $ret->type = 'single';
+                if($value == null){
+                    $ret->type = 'missing';
+                }else{
+                    $ret->type = 'single';
+                }
             }
         }else{
             $ret->found = false;
@@ -68,6 +76,10 @@ class CliParser
     public function getErrors(){
         return $this->errors;
     }
+
+    /**
+     * Main parsing code
+     */
     private function parse(){
         $cnt = 0;
         $values = array();
@@ -115,7 +127,7 @@ class CliParser
             $this->currenElement = 'error';
         }else{
             if(sizeof($values)==0) {
-                $this->args[$this->currentElement] = null;
+                $this->args[$this->currentElement] = '';
             }elseif(sizeof($values)==1){
                 $this->args[$this->currentElement] = $values[0];
             }else{
