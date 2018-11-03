@@ -7,15 +7,15 @@ A simple PHP cli arguments parser
 
 ## Usage:
 
-    <?php
-    require_once __DIR__.'/../vendor/autoload.php';
+```php
+require_once __DIR__.'/../vendor/autoload.php';
 
-    use PhpSimpcli\CliParser;
+use PhpSimpcli\CliParser;
 
-    $sp = new CliParser();
+$sp = new CliParser();
 
-    var_dump($sp->get('myOption'));
-
+var_dump($sp->get('myOption'));
+```
 From the cli console:
 
     php test.php -otherOption 
